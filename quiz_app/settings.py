@@ -135,9 +135,11 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db' # Default database-backed sessions
 
+
 # Make sure cookies can be set
-SESSION_COOKIE_SECURE = False  # Set to True only if you are using HTTPS
+SESSION_COOKIE_SECURE = True  # Set to True since Render uses HTTPS
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'  # Avoid cross-site cookie issues
-CSRF_COOKIE_SECURE = False  # Set to True only if you are using HTTPS
+CSRF_COOKIE_SECURE = True  # Enable CSRF cookie for HTTPS
 CSRF_COOKIE_SAMESITE = 'Lax'
+
