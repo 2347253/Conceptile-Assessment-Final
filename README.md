@@ -56,6 +56,10 @@ python manage.py runserver
 ```
 
 ---
+## Hosted on Render.com: https://quiic-conceptile.onrender.com/
+
+(website might take a while to respond)
+---
 
 ## Contact ✉️
 For questions or support, reach out to:
@@ -63,3 +67,13 @@ For questions or support, reach out to:
 Shawn T
 
 LinkedIn: www.linkedin.com/in/shawnthomas02
+
+---
+## Screenshots:
+![Alt Text](1.png)
+![Alt Text](2.png)
+![Alt Text](3.png)
+![Alt Text](4.png)
+
+
+
