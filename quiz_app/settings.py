@@ -24,11 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-d1qc%4w6v=_exgrt0x*9vq(iz*%9a*!ex_eu1adeb)hyct0naz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '127.0.0.1',  # Localhost for development
     'quiic-conceptile.onrender.com',  # Render deployment URL
+    '.onrender.com',  # Allows wildcard for Render subdomains
+
 ]
 
 
@@ -130,16 +132,35 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db' # Default database-backed sessions
 
 
-# Make sure cookies can be set
-SESSION_COOKIE_SECURE = True  # Set to True since Render uses HTTPS
+# Secure cookie settings for HTTPS
+SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = 'Lax'  # Avoid cross-site cookie issues
-CSRF_COOKIE_SECURE = True  # Enable CSRF cookie for HTTPS
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'Lax'
 
+# Persistent session storage
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}
