@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            color: #EDD8B2;
+            background-color: #141726;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #logo {
+            width: 200px;
+            margin-bottom: 20px;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #username-input {
+            border: none;
+            border-bottom: 2px solid #EDD8B2;
+            background: transparent;
+            color: #EDD8B2;
+            padding: 10px;
+            font-size: 18px;
+            width: 250px;
+            outline: none;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #start-button {
+            display: none;
+            padding: 10px 20px;
+            background-color: #EDD8B2;
+            color: #141726;
+            border: none;
+            border-radius: 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        #start-button:hover {
+            background-color: #C5B298;
+        }
+        /* #music-icon {
+            position: absolute;
+            bottom: 30px;
+            height: 50px;
+            right: 30px;
+            cursor: pointer;
+        } */
+    </style>
+</head>
+<body>
+    <img id="logo" src="/static/logo.png" alt="Quiz Logo">
+    <div class="form-container">
+        <input id="username-input" type="text" placeholder="Enter your name">
+        <button id="start-button">Start Quiz</button>
+    </div>
+    <!-- <img id="music-icon" src="/static/music.png" alt="Music Icon" onclick="toggleMusic()">
+    <audio id="bg-music" loop>
+        <source src="/static/music.wav" type="audio/mpeg">
+    </audio> -->
+    <script>
+        const usernameInput = document.getElementById('username-input');
+        const startButton = document.getElementById('start-button');
+        // const music = document.getElementById('bg-music');
+        // const musicIcon = document.getElementById('music-icon');
+
+        usernameInput.addEventListener('input', () => {
+            if (usernameInput.value.trim() !== '') {
+                startButton.style.display = 'inline-block';
+            } else {
+                startButton.style.display = 'none';
+            }
+        });
+
+        // // Music control
+        // function toggleMusic() {
+        //     if (music.paused) {
+        //         music.play();
+        //         musicIcon.src = '/static/musicOff.png';
+        //     } else {
+        //         music.pause();
+        //         musicIcon.src = '/static/music.png';
+        //     }
+        // }
+
+        startButton.addEventListener('click', () => {
+            // Replace body content with countdown display
+            document.body.innerHTML = `
+                <div style="text-align: center; color: #EDD8B2; display: flex; align-items: center; justify-content: center; height: 100vh;">
+                    <h1 id="countdown" style="font-size: 50px; transition: all 1s ease; font-family: 'Courier New', Courier, monospace;"></h1>
+                </div>
+            `;
+
+            const countdownElement = document.getElementById('countdown');
+            const countdownAudio = new Audio('/static/countdown.mp3'); 
+            countdownAudio.play();
+            let countdown = 3; // Start with 3
+
+            // Countdown animation logic
+            const interval = setInterval(() => {
+                if (countdown > 0) {
+                    countdownElement.textContent = countdown; 
+                } else if (countdown === 0) {
+                    countdownElement.textContent = 'Go!'; 
+                } else {
+                    // Zoom and fade out effect for "Go!"
+                    countdownElement.style.transition = 'transform 1.5s ease, opacity 1.5s ease';
+                    countdownElement.style.transform = 'scale(50)'; // Zoom effect
+                    countdownElement.style.opacity = '0';           // Fade out effect
+
+                    setTimeout(() => {
+                        window.location.href = "/quiz/start/";
+                    }, 900);
+                    clearInterval(interval); 
+                }
+                countdown--;
+            }, 950);
+        });
+
+
+
+    </script>
+</body>
+</html>
