@@ -26,7 +26,10 @@ SECRET_KEY = 'django-insecure-d1qc%4w6v=_exgrt0x*9vq(iz*%9a*!ex_eu1adeb)hyct0naz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',  # Localhost for development
+    'quiic-conceptile.onrender.com',  # Render deployment URL
+]
 
 
 # Application definition
