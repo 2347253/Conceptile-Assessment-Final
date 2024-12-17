@@ -251,8 +251,8 @@ pyasn1-modules==0.3.0
 PyAutoGUI==0.9.54
 pycaw==20240210
 pycparser==2.21
-pydantic==1.10.6
-pydantic_core==2.16.3
+pydantic
+pydantic_core
 pydeck==0.8.1b0
 pydivert==2.1.0
 pydub==0.25.1
