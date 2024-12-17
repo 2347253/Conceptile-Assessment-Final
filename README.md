@@ -30,3 +30,35 @@ Follow these steps to get the project up and running locally:
 ```bash
 git clone https://github.com/your-username/quiz-app.git
 cd quiz-app
+```
+
+### 2. Create a Virtual Environment
+```bash
+python -m venv venv
+```
+
+### 3. Activate it
+
+### 4. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Apply Migrations
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 6. Run the Server
+```bash
+python manage.py runserver
+```
+
+---
+
+## Contact ✉️
+For questions or support, reach out to:
+
+Shawn T
+LinkedIn: www.linkedin.com/in/shawnthomas02
