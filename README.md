@@ -61,4 +61,5 @@ python manage.py runserver
 For questions or support, reach out to:
 
 Shawn T
+
 LinkedIn: www.linkedin.com/in/shawnthomas02
