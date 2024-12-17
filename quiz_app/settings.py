@@ -133,9 +133,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Default database-backed sessions
+SESSION_ENGINE = 'django.contrib.sessions.backends.db' # Default database-backed sessions
 
-CSRF_COOKIE_SECURE = True  # Ensures CSRF cookies are secure
-SESSION_COOKIE_SECURE = True  # Ensures session cookies are secure
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+# Make sure cookies can be set
+SESSION_COOKIE_SECURE = False  # Set to True only if you are using HTTPS
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'  # Avoid cross-site cookie issues
+CSRF_COOKIE_SECURE = False  # Set to True only if you are using HTTPS
+CSRF_COOKIE_SAMESITE = 'Lax'
