@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% csrf_token %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
@@ -113,6 +114,8 @@
 
         // Submit the selected answer
         const submitAnswer = async (questionId, selectedOption) => {
+            console.log("Submitting answer for question ID:", questionId, "Selected option:", selectedOption);
+
             try {
                 const response = await fetch('/quiz/submit-answer/', {
                     method: 'POST',
@@ -125,13 +128,25 @@
                         selected_option: selectedOption,
                     }),
                 });
+
                 const data = await response.json();
-                if (data.error) throw new Error(data.error);
-                loadQuestion(); // Load the next question
+                console.log("Server Response:", data);  // Log the server response
+
+                if (data.success) {
+                    console.log("Answer submitted successfully. Loading next question...");
+                    loadQuestion();
+                } else {
+                    console.error('Error submitting answer:', data.error);
+                    alert("Error: " + data.error);
+                }
             } catch (err) {
                 console.error('Error submitting answer:', err);
+                alert("An error occurred. Please try again.");
             }
         };
+
+
+
 
         function endQuiz() {
             fetch('/quiz/end-quiz/')

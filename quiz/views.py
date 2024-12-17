@@ -1,52 +1,32 @@
-import random
-# from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .models import UserSession, Question, UserAnswer
-from django.shortcuts import redirect, render
-import re
+from .models import Question, UserAnswer
+import random, json
 
+
+# Home View: Displays the homepage and validates the placeholder input
 def home(request):
     if request.method == "POST":
-        username = request.POST.get("username").strip()
-        
-        if username:
-            # Save the username in the session
-            request.session["username"] = username
-            print(f"Session set: {request.session['username']}")  # Debug log
-            return redirect("start_quiz")
+        user_input = request.POST.get("username", "").strip()
+        if user_input.lower() == "start":  # Check if the input is 'start'
+            return redirect("start_quiz")  # Redirect to the start quiz page
         else:
-            return render(request, "quiz/home.html", {"error": "Name cannot be empty."})
-    
+            return render(request, "quiz/home.html", {"error": "Type 'start' to proceed."})
+
     return render(request, "quiz/home.html")
 
-from .models import UserSession
 
+# Start Quiz View: Loads the quiz.html page
 def start_quiz(request):
-    username = request.session.get("username")  # Retrieve username from session
-    print(f"Session username in start_quiz: {username}")  # Debug log
-
-    if username:
-        # Delete any existing sessions for the user
-        UserSession.objects.filter(user=username).delete()
-        print(f"Old sessions for user '{username}' deleted.")  # Debug log
-
-        # Create a new UserSession for this quiz attempt
-        session = UserSession.objects.create(user=username)
-        print(f"New UserSession created: {session.id}")  # Debug log
-
-        # Store the session ID in the request session
-        request.session["session_id"] = session.id
-        return render(request, "quiz/quiz.html", {"username": username})
-    else:
-        print("Redirecting to home because username is not in session")
-        return redirect("home")
+    return render(request, "quiz/quiz.html")
 
 
+# Fetch Random Question View: Fetches a random question from the database
 def get_random_question(request):
-    if request.method == 'GET':
+    if request.method == "GET":
         questions = list(Question.objects.all())
         if questions:
-            question = random.choice(questions)
+            question = random.choice(questions)  # Pick a random question
             return JsonResponse({
                 'id': question.id,
                 'question': question.question_text,
@@ -62,69 +42,57 @@ def get_random_question(request):
 
 
 def submit_answer(request):
-    if request.method == 'POST':
-        import json
+    if request.method == "POST":
         try:
-            data = json.loads(request.body)  
-            session_id = request.session.get("session_id")  
+            data = json.loads(request.body)
+            print(f"Request Body: {request.body}")  # Debugging log
+            print(f"Parsed Data: {data}")
+
             question_id = data.get('question_id')
             selected_option = data.get('selected_option')
 
-            if not session_id:
-                return JsonResponse({'error': 'No active session found.'}, status=400)
+            if not question_id or not selected_option:
+                return JsonResponse({'error': 'Invalid data: question_id and selected_option are required'}, status=400)
 
-            print(f"Session ID: {session_id}, Question ID: {question_id}, Selected Option: {selected_option}")  # Debug log
-
-            # Fetch the current session and question
-            session = UserSession.objects.get(id=session_id)
+            # Retrieve the question and validate the answer
             question = Question.objects.get(id=question_id)
-
-            # Check if the selected option is correct
             is_correct = question.correct_answer == selected_option
 
-            # Record the answer
+            # Save the answer (no session required now)
             UserAnswer.objects.create(
-                session=session,
                 question=question,
                 selected_option=selected_option,
                 is_correct=is_correct
             )
 
-            # Update session score if correct
-            if is_correct:
-                session.score += 1
-                session.save()
+            print(f"Question ID: {question_id} Selected Option: {selected_option}")
+            print(f"Is Correct: {is_correct}")
 
-            return JsonResponse({'is_correct': is_correct})
+            return JsonResponse({'is_correct': is_correct, 'success': True})
+        except Question.DoesNotExist:
+            return JsonResponse({'error': 'Question not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format.'}, status=400)
         except Exception as e:
-            # print(f"Error in submit_answer: {str(e)}")  # Debug log
             return JsonResponse({'error': str(e)}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
-
-
+# End Quiz View: Displays the results of the user's quiz attempt
 def end_quiz(request):
-    if request.method == 'GET':
-        session_id = request.session.get("session_id")  # Get the current session ID
-        if not session_id:
-            return JsonResponse({'error': 'No active session found.'}, status=400)
+    if request.method == "GET":
+        answers = UserAnswer.objects.all()  # Fetch all user answers
+        total_questions = answers.count()
+        correct_answers = answers.filter(is_correct=True).count()
+        incorrect_answers = total_questions - correct_answers
 
-        try:
-            session = UserSession.objects.get(id=session_id)
-            answers = UserAnswer.objects.filter(session=session)
-            # Prepare the result data
-            results = {
-                'total_questions': answers.count(),
-                'correct_answers': answers.filter(is_correct=True).count(),
-                'incorrect_answers': answers.filter(is_correct=False).count(),
+        # Clear UserAnswer table for the next attempt
+        UserAnswer.objects.all().delete()
+
+        return render(request, "quiz/results.html", {
+            "results": {
+                "total_questions": total_questions,
+                "correct_answers": correct_answers,
+                "incorrect_answers": incorrect_answers,
             }
-            return render(request, "quiz/results.html", {"results": results})
-        except UserSession.DoesNotExist:
-            return redirect("home")
-        except Exception as e:
-            # print(f"Error in end_quiz: {str(e)}")  # Debug log
-            return redirect("home")
-
-
-
-
-
+        })

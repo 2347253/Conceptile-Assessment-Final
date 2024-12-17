@@ -29,10 +29,9 @@ class UserSession(models.Model):
 
 # User's ANSWERS 
 class UserAnswer(models.Model):
-    session = models.ForeignKey(UserSession, on_delete=models.CASCADE)  # Links to the user's session 
     question = models.ForeignKey(Question, on_delete=models.CASCADE)  # Links to the question being answered
     selected_option = models.CharField(max_length=1)  # Stores the selected option (A, B, C, D)
     is_correct = models.BooleanField()  # Checks if answer is correct
 
     def __str__(self):
-        return f"Session: {self.session}, Question: {self.question}, Correct: {self.is_correct}"
+        return f"Question: {self.question}, Correct: {self.is_correct}"

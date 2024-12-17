@@ -20,8 +20,7 @@ from quiz import views
 
 
 urlpatterns = [
-    path('', views.home, name='home'),  
     path('admin/', admin.site.urls),
-    path('quiz/', include('quiz.urls')),
+    path('', include('quiz.urls')),
 
 ]

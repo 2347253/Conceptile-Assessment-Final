@@ -26,7 +26,7 @@
             flex-direction: column;
             align-items: center;
         }
-        #username-input {
+        #placeholder-input {
             border: none;
             border-bottom: 2px solid #EDD8B2;
             background: transparent;
@@ -51,52 +51,30 @@
         #start-button:hover {
             background-color: #C5B298;
         }
-        /* #music-icon {
-            position: absolute;
-            bottom: 30px;
-            height: 50px;
-            right: 30px;
-            cursor: pointer;
-        } */
     </style>
 </head>
 <body>
     <img id="logo" src="/static/logo.png" alt="Quiz Logo">
     <div class="form-container">
-        <input id="username-input" type="text" placeholder="Enter your name">
+        <input id="placeholder-input" type="text" placeholder="Type 'start' to begin">
         <button id="start-button">Start Quiz</button>
     </div>
-    <!-- <img id="music-icon" src="/static/music.png" alt="Music Icon" onclick="toggleMusic()">
-    <audio id="bg-music" loop>
-        <source src="/static/music.wav" type="audio/mpeg">
-    </audio> -->
-    <script>
-        const usernameInput = document.getElementById('username-input');
-        const startButton = document.getElementById('start-button');
-        // const music = document.getElementById('bg-music');
-        // const musicIcon = document.getElementById('music-icon');
 
-        usernameInput.addEventListener('input', () => {
-            if (usernameInput.value.trim() !== '') {
+    <script>
+        const inputField = document.getElementById('placeholder-input');
+        const startButton = document.getElementById('start-button');
+
+        inputField.addEventListener('input', () => {
+            // Only display the button if the input is 'start' (case-insensitive)
+            if (inputField.value.trim().toLowerCase() === 'start') {
                 startButton.style.display = 'inline-block';
             } else {
                 startButton.style.display = 'none';
             }
         });
 
-        // // Music control
-        // function toggleMusic() {
-        //     if (music.paused) {
-        //         music.play();
-        //         musicIcon.src = '/static/musicOff.png';
-        //     } else {
-        //         music.pause();
-        //         musicIcon.src = '/static/music.png';
-        //     }
-        // }
-
         startButton.addEventListener('click', () => {
-            // Replace body content with countdown display
+            // Redirect to the quiz page directly without sessions
             document.body.innerHTML = `
                 <div style="text-align: center; color: #EDD8B2; display: flex; align-items: center; justify-content: center; height: 100vh;">
                     <h1 id="countdown" style="font-size: 50px; transition: all 1s ease; font-family: 'Courier New', Courier, monospace;"></h1>
@@ -106,31 +84,25 @@
             const countdownElement = document.getElementById('countdown');
             const countdownAudio = new Audio('/static/countdown.mp3'); 
             countdownAudio.play();
-            let countdown = 3; // Start with 3
+            let countdown = 3;
 
-            // Countdown animation logic
             const interval = setInterval(() => {
                 if (countdown > 0) {
-                    countdownElement.textContent = countdown; 
+                    countdownElement.textContent = countdown;
                 } else if (countdown === 0) {
-                    countdownElement.textContent = 'Go!'; 
+                    countdownElement.textContent = 'Go!';
                 } else {
-                    // Zoom and fade out effect for "Go!"
                     countdownElement.style.transition = 'transform 1.5s ease, opacity 1.5s ease';
-                    countdownElement.style.transform = 'scale(50)'; // Zoom effect
-                    countdownElement.style.opacity = '0';           // Fade out effect
-
+                    countdownElement.style.transform = 'scale(50)';
+                    countdownElement.style.opacity = '0';
                     setTimeout(() => {
-                        window.location.href = "/quiz/start/";
+                        window.location.href = "/quiz/start";  // Redirect to quiz page
                     }, 900);
-                    clearInterval(interval); 
+                    clearInterval(interval);
                 }
                 countdown--;
             }, 1050);
         });
-
-
-
     </script>
 </body>
 </html>
