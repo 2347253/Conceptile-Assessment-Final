@@ -65,7 +65,8 @@ Shawn T
 
 LinkedIn: www.linkedin.com/in/shawnthomas02
 
-Hosted: https://quiic-conceptile.onrender.com/
+Hosted: https://quiic-conceptile.onrender.com/ 
+(could take a while to load)
 
 ---
 ## Screenshots:
